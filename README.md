@@ -11,4 +11,4 @@ A simple generic cache class developed for the final work of the Information Ret
 * $cd build
 * $cmake ..
 * $make
-* bin/runTests
+* $bin/runTests

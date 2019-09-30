@@ -11,48 +11,51 @@
 
 template<class Key>
 class Node{
+public:
     Key key;
     int fre;
-    Node(Key k){
+    int timeStamp; // the latest time stamp when this element is accessed.
+    Node(Key k, int ts){
         key = k;
         fre = 1;
+        timeStamp = ts;
     }
-    Node(){
-        key = -1;
-        fre = 0;
-    }
+    Node(){}
 };
 
 namespace Policies{
 template<class Key, class Data, typename hash = std::hash<Key>>
-class lfu_cache {
+class lfu_cache {    
+public:
     std::vector<Node<Key>*> pq; // A priority queue, with the least usage frequency and least recently used element at the top.
 	std::unordered_map<Key, int, hash> mp; // A mapping from the key of the element to its index in the priority queue.
-
-public:
+    int ts;
     lfu_cache(){
         Node<Key>* dummy = new Node<Key>();
         pq.push_back(dummy); // The pq start from pq[1].
+        ts = 0;
     }
     void update_place(Key key){
         // ++ to frequency of key
         int index = mp[key];
         pq[index]->fre++;
+        pq[index]->timeStamp = ++ts;
         sink(index);
     }   
 
     void insert(Key key, Data * data, std::unordered_map<Key, Data*, hash> * storage, int max_entries, int * cur_entries){        
         if(max_entries == *cur_entries){
             // find to min freq to remove
-            int oldKey = pq[1]->key;
-            storage.erase(oldKey);
+            Key oldKey = pq[1]->key;
+            storage->erase(oldKey);
             mp.erase(oldKey);
-            Node<Key>* newnode = new Node<Key>(key);
+            Node<Key>* newnode = new Node<Key>(key, ++ts);
+            ++ts;
             pq[1] = newnode;
             mp[key] = 1;
             sink(1);
         }else{
-            Node<Key>* newnode = new Node<Key>(key);
+            Node<Key>* newnode = new Node<Key>(key, ++ts);
             pq.push_back(newnode);
             mp[key] = pq.size() - 1;
             swim(pq.size() - 1);
@@ -67,7 +70,7 @@ public:
      */
 	void sink(int index) {
 	    int left = 2 * index, right = 2 * index + 1, target = index;
-	    if(left < pq.size() && pq[left]->fre <= pq[target]->fre) // If the left child has the same frequency, we probably need to swap the parent node and the child node, because the parent node is recently accessed, and the left child node was accessed at an older time stamp.
+	    if(left < pq.size() && pq[left]->fre <= pq[target]->fre) // If the left child has the same frequency, we probably need to swap the parent node and the child node, because the parent node is recently accessed, and the left child node was accessed.
                target = left;
             if(right < pq.size()) { 
                 if(pq[right]->fre < pq[target]->fre || (pq[right]->fre == pq[target]->fre && pq[right]->timeStamp < pq[target]->timeStamp)) // If right child has the same frequency and an older time stamp, we must swap it.

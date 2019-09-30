@@ -21,7 +21,9 @@ public:
 
     void insert(Key key, Data * data, std::unordered_map<Key, Data*, hash> * storage, int max_entries, int * cur_entries){
         if(max_entries == *cur_entries){
-            entries.remove(entries.back());            
+            Key old_key = entries.back();
+            entries.remove(old_key); 
+            storage->erase(old_key);
         }else{
             *cur_entries += 1;
         }

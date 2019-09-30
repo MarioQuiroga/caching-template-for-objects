@@ -19,7 +19,7 @@ struct pair_hash
 
 using namespace Policies;
 
-// Tests lru policies
+// Tests LRU policies
 TEST(CacheTest, get_lru){
     // Create vars
     Cache<type_pair, Cache_data, pair_hash, lru_cache> cache(10);
@@ -58,6 +58,47 @@ TEST(CacheTest, modify_lru){
     d = cache.get(key);
     ASSERT_EQ(3, d->count);
 }
+
+// Tests LFU policies
+TEST(CacheTest, get_lfu){
+    // Create vars
+    Cache<type_pair, Cache_data, pair_hash, lfu_cache> cache(10);
+    type_pair key = type_pair(10, 11);
+    Cache_data data(0);
+    // get pointer to data
+    Cache_data * d = cache.get(key);
+    ASSERT_EQ(NULL, d);
+}
+
+TEST(CacheTest, insert_lfu){    
+    // Create vars
+    Cache<type_pair, Cache_data, pair_hash, lfu_cache> cache(10);
+    type_pair key(10, 11);
+    Cache_data data(10);
+    // Insert data
+    cache.insert(key, &data);
+    // get pointer to data
+    Cache_data * d = cache.get(key);
+    ASSERT_EQ(data.count, d->count);
+}
+
+TEST(CacheTest, modify_lfu){    
+    // Create vars
+    Cache<type_pair, Cache_data, pair_hash, lfu_cache> cache(10);
+    type_pair key(10, 11);
+    Cache_data data(10);
+    // Insert data
+    cache.insert(key, &data);
+    // get pointer to data
+    Cache_data * d = cache.get(key);
+     ASSERT_EQ(10, d->count);
+    // modify data
+    d->count = 3;
+    // get data again
+    d = cache.get(key);
+    ASSERT_EQ(3, d->count);
+}
+
 
 int main(int argc, char **argv) {
     testing::InitGoogleTest(&argc, argv);
