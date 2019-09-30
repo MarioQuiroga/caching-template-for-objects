@@ -1,9 +1,7 @@
 #pragma once
-//#include "cache_policies/lfu_policy.hpp"
 #include "cache_policies/lru_policy.hpp"
 #include <cstddef>
 #include <unordered_map>
-//#include "cache_policies/lfuda_policy.hpp"
 #include "Cache_data.hpp"
 
 using namespace Policies;

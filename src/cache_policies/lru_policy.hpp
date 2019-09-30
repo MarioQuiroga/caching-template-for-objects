@@ -5,10 +5,12 @@
 #include "../Cache_data.hpp"
 
 namespace Policies{
-template<typename Key, class Data, typename hash>
+template<typename Key, class Data, typename hash = std::hash<Key>>
 class lru_cache {
 public:
     std::list<Key> entries;
+
+    lru_cache(){}
 
     void update_place(Key key){
         if(key != *entries.begin()){

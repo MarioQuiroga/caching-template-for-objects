@@ -2,6 +2,8 @@
 #include <gtest/gtest.h>
 #include <cstddef>
 #include "src/cache_policies/lru_policy.hpp"
+#include "src/cache_policies/lfu_policy.hpp"
+//#include "cache_policies/lfuda_policy.hpp"
 #include "src/Cache.hpp"
 
 
@@ -17,6 +19,7 @@ struct pair_hash
 
 using namespace Policies;
 
+// Tests lru policies
 TEST(CacheTest, get_lru){
     // Create vars
     Cache<type_pair, Cache_data, pair_hash, lru_cache> cache(10);
