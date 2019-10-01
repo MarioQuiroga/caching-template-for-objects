@@ -50,7 +50,6 @@ public:
             storage->erase(oldKey);
             mp.erase(oldKey);
             Node<Key>* newnode = new Node<Key>(key, ++ts);
-            ++ts;
             pq[1] = newnode;
             mp[key] = 1;
             sink(1);
