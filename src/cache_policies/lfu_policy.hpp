@@ -8,20 +8,7 @@
 #include <vector>
 #include <unordered_map>
 #include "../Cache_data.hpp"
-
-template<class Key>
-class Node{
-public:
-    Key key;
-    int fre;
-    int timeStamp; // the latest time stamp when this element is accessed.
-    Node(Key k, int ts){
-        key = k;
-        fre = 1;
-        timeStamp = ts;
-    }
-    Node(){}
-};
+#include "util/node.hpp"
 
 namespace Policies{
 template<class Key, class Data, typename hash = std::hash<Key>>
@@ -58,6 +45,7 @@ public:
             pq.push_back(newnode);
             mp[key] = pq.size() - 1;
             swim(pq.size() - 1);
+            *cur_entries += 1;
         }
         std::pair<Key,Data*> d(key,data);
         storage->insert(d);

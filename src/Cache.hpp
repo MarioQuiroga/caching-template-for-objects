@@ -44,4 +44,8 @@ public:
         return storage.empty();
     }
 
+    int get_count_entries(){
+        return cur_entries;
+    }
+
 };
